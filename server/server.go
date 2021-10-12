@@ -19,7 +19,7 @@ import (
 	configbuiltin "github.com/micromdm/micromdm/platform/config/builtin"
 	"github.com/micromdm/micromdm/platform/dep/sync"
 	syncbuiltin "github.com/micromdm/micromdm/platform/dep/sync/builtin"
-	"github.com/micromdm/micromdm/platform/device"
+// 	"github.com/micromdm/micromdm/platform/device"
 	devicebuiltin "github.com/micromdm/micromdm/platform/device/builtin"
 	"github.com/micromdm/micromdm/platform/profile"
 	profilebuiltin "github.com/micromdm/micromdm/platform/profile/builtin"
@@ -191,7 +191,7 @@ func (c *Server) setupCommandQueue(logger log.Logger) error {
 		return fmt.Errorf("invalid command queue type: %s", c.Queue)
 	}
 
-	devDB, err := devicebuiltin.NewDB(c.DB)
+devDB, err := devicebuiltin.NewDB(c.DB)
 	if err != nil {
 		return errors.Wrap(err, "new device db")
 	}
@@ -202,11 +202,11 @@ func (c *Server) setupCommandQueue(logger log.Logger) error {
 		mdmService = svc
 		mdmService = block.RemoveMiddleware(c.RemoveDB)(mdmService)
 
-		udidauthLogger := log.With(logger, "component", "udidcertauth")
-		mdmService = device.UDIDCertAuthMiddleware(devDB, udidauthLogger, c.UDIDCertAuthWarnOnly)(mdmService)
+// 		udidauthLogger := log.With(logger, "component", "udidcertauth")
+// 		mdmService = device.UDIDCertAuthMiddleware(devDB, udidauthLogger, c.UDIDCertAuthWarnOnly)(mdmService)
 
-		verifycertLogger := log.With(logger, "component", "verifycert")
-		mdmService = VerifyCertificateMiddleware(c.ValidateSCEPIssuer, c.ValidateSCEPExpiration, c.SCEPDepot, verifycertLogger)(mdmService)
+// 		verifycertLogger := log.With(logger, "component", "verifycert")
+// 		mdmService = VerifyCertificateMiddleware(c.ValidateSCEPIssuer, c.ValidateSCEPExpiration, c.SCEPDepot, verifycertLogger)(mdmService)
 	}
 	c.MDMService = mdmService
 
