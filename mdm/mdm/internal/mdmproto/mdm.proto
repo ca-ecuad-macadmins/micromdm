@@ -73,6 +73,7 @@ message Command {
     SetBootstrapToken set_bootstrap_token = 37;
     SetRecoveryLock set_recovery_lock = 38;
     VerifyRecoveryLock verify_recovery_lock = 39;
+    RefreshCellularPlans refresh_cellular_plans = 40;
   }
 }
 
@@ -400,6 +401,7 @@ message Update {
   string product_version = 2;
   string install_action = 3;
   int64 max_user_deferrals = 4;
+  string priority = 5;
 }
 
 message ScheduleOSUpdateScan {
@@ -449,4 +451,8 @@ message ErrorChain {
   // values, as they may change between software releases.
   string error_domain = 3;
   int32  error_code = 4;
+}
+
+message RefreshCellularPlans {
+  string esim_server_url = 1;
 }

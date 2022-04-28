@@ -121,8 +121,28 @@ func TestMarshalCommand(t *testing.T) {
 							InstallAction:    "InstallLater",
 							MaxUserDeferrals: &deferrals,
 							ProductVersion:   "1.0.0",
+							Priority:         "Low",
 						},
 					},
+				},
+			},
+		},
+		{
+			Command: Command{
+				RequestType: "RotateFileVaultKey",
+				RotateFileVaultKey: &RotateFileVaultKey{
+					KeyType: "personal",
+					FileVaultUnlock: FileVaultUnlock{
+						Password: "password",
+					},
+				},
+			},
+		},
+		{
+			Command: Command{
+				RequestType: "RefreshCellularPlans",
+				RefreshCellularPlans: &RefreshCellularPlans{
+					EsimServerUrl: "example.server.com",
 				},
 			},
 		},
@@ -334,7 +354,7 @@ func TestEndToEnd(t *testing.T) {
 		{
 			name: "ScheduleOSUpdate",
 			requestBytes: []byte(
-				`{"request_type":"ScheduleOSUpdate","updates":[{"product_key":"io.micromdm.micromdm","install_action":"InstallLater","max_user_deferrals":3,"product_version":"1.0.0"}]}`,
+				`{"request_type":"ScheduleOSUpdate","updates":[{"product_key":"io.micromdm.micromdm","install_action":"InstallLater","max_user_deferrals":3,"product_version":"1.0.0","priority":"Low"}]}`,
 			),
 			testFn: func(t *testing.T, parts endToEndParts) {
 				needToSee := [][]byte{
@@ -347,6 +367,8 @@ func TestEndToEnd(t *testing.T) {
 					[]byte(`3`),
 					[]byte(`ProductVersion`),
 					[]byte(`1.0.0`),
+					[]byte(`Priority`),
+					[]byte(`Low`),
 				}
 				for _, b := range needToSee {
 					if !bytes.Contains(parts.plistData, b) {
@@ -483,6 +505,23 @@ func TestEndToEnd(t *testing.T) {
 			testFn: func(t *testing.T, parts endToEndParts) {
 				if parts.payload.CommandUUID != "this-uuid-should-be-used" {
 					t.Error("CommandUUID should be set to request payload's command_uuid")
+				}
+			},
+		},
+		{
+			name: "RefreshCellularPlans",
+			requestBytes: []byte(
+				`{"request_type":"RefreshCellularPlans","esim_server_url":"example.server.com"}`,
+			),
+			testFn: func(t *testing.T, parts endToEndParts) {
+				needToSee := [][]byte{
+					[]byte(`eSIMServerURL`),
+					[]byte(`example.server.com`),
+				}
+				for _, b := range needToSee {
+					if !bytes.Contains(parts.plistData, b) {
+						t.Error(fmt.Sprintf("marshaled plist does not contain required bytes: '%s'", string(b)))
+					}
 				}
 			},
 		},

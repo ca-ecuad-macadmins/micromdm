@@ -68,6 +68,7 @@ type Command struct {
 	ScheduleOSUpdateScan            *ScheduleOSUpdateScan
 	ActiveNSExtensions              *ActiveNSExtensions
 	RotateFileVaultKey              *RotateFileVaultKey
+	RefreshCellularPlans            *RefreshCellularPlans
 }
 
 // InstallProfile is an InstallProfile MDM Command
@@ -280,6 +281,7 @@ type OSUpdate struct {
 	InstallAction    string `json:"install_action"`
 	MaxUserDeferrals *int64 `plist:",omitempty" json:"max_user_deferrals,omitempty"`
 	ProductVersion   string `plist:",omitempty" json:"product_version,omitempty"`
+	Priority         string `plist:",omitempty" json:"priority,omitempty"`
 }
 
 type ScheduleOSUpdate struct {
@@ -305,4 +307,8 @@ type FileVaultUnlock struct {
 	Password                 string `plist:",omitempty" json:"password,omitempty"`
 	PrivateKeyExport         []byte `plist:",omitempty" json:"private_key_export,omitempty"`
 	PrivateKeyExportPassword string `plist:",omitempty" json:"private_key_export_password,omitempty"`
+}
+
+type RefreshCellularPlans struct {
+	EsimServerUrl string `plist:"eSIMServerURL,omitempty" json:"esim_server_url,omitempty"`
 }

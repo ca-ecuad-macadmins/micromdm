@@ -369,6 +369,7 @@ func commandToProto(cmd *Command) (*mdmproto.Command, error) {
 				InstallAction:    u.InstallAction,
 				MaxUserDeferrals: zeroInt64IfNil(u.MaxUserDeferrals),
 				ProductVersion:   u.ProductVersion,
+				Priority:         u.Priority,
 			})
 		}
 		cmdproto.Request = &mdmproto.Command_ScheduleOsUpdate{
@@ -400,6 +401,12 @@ func commandToProto(cmd *Command) (*mdmproto.Command, error) {
 					PrivateKeyExport:         fvunlock.PrivateKeyExport,
 					PrivateKeyExportPassword: fvunlock.PrivateKeyExportPassword,
 				},
+			},
+		}
+	case "RefreshCellularPlans":
+		cmdproto.Request = &mdmproto.Command_RefreshCellularPlans{
+			RefreshCellularPlans: &mdmproto.RefreshCellularPlans{
+				EsimServerUrl: cmd.RefreshCellularPlans.EsimServerUrl,
 			},
 		}
 	default:
