@@ -125,6 +125,8 @@ func serve(args []string) error {
 		flValidateSCEPExpiration = flagset.Bool("validate-scep-expiration", env.Bool("MICROMDM_VALIDATE_SCEP_EXPIRATION", false), "validate that the SCEP certificate is still valid")
 		flPrintArgs              = flagset.Bool("print-flags", false, "Print all flags and their values")
 		flQueue                  = flagset.String("queue", env.String("MICROMDM_QUEUE", "builtin"), "command queue type")
+		flDMURL                  = flagset.String("dm", env.String("DM", ""), "URL to send Declarative Management requests to")
+		flLogTime                = flagset.Bool("log-time", false, "Include timestamp in log messages")
 	)
 	flagset.Usage = usageFor(flagset, "micromdm serve [flags]")
 	if err := flagset.Parse(args); err != nil {
@@ -153,6 +155,9 @@ func serve(args []string) error {
 	}
 
 	logger := log.NewLogfmtLogger(os.Stderr)
+	if *flLogTime {
+		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+	}
 	stdlog.SetOutput(log.NewStdlibAdapter(logger)) // force structured logs
 	mainLogger := log.With(logger, "component", "main")
 	mainLogger.Log("msg", "started")
@@ -177,6 +182,7 @@ func serve(args []string) error {
 
 		SCEPClientValidity: *flSCEPClientValidity,
 		Queue:              *flQueue,
+		DMURL:              *flDMURL,
 	}
 	if !sm.UseDynSCEPChallenge {
 		// TODO: we have a static SCEP challenge password here to prevent
